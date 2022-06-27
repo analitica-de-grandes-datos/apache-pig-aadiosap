@@ -15,6 +15,6 @@ $ pig -x local -f pregunta.pig
 lines = LOAD 'data.tsv' AS (line:CHARARRAY);
 words = FOREACH lines GENERATE FLATTEN(TOKENIZE(line)) AS word;
 grouped = GROUP words BY word;
-wordcount = FOREACH grouped GENERATE group, COUNT(words);
-STORE wordcount INTO 'output';
+wordcount = FOREACH grouped GENERATE group,COUNT(words);
+STORE wordcount INTO 'output' USING PigStorage(',');
 DUMP wordcount;

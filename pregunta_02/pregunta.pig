@@ -12,3 +12,9 @@ $ pig -x local -f pregunta.pig
 
      >>> Escriba el codigo del mapper a partir de este punto <<<
 */
+lines = LOAD 'data.tsv' AS (line:CHARARRAY);
+words = FOREACH lines GENERATE FLATTEN(TOKENIZE(line)) AS word;
+grouped = GROUP words BY word;
+wordcount = FOREACH grouped GENERATE group,COUNT(words);
+STORE wordcount INTO 'output';
+DUMP wordcount;
