@@ -11,3 +11,9 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
+lines = LOAD 'data.tsv' AS (key:CHARARRAY,date:CHARARRAY,val:int);
+ordered = ORDER lines BY val;
+ordered_drop = FOREACH ordered GENERATE val;
+ordered_lim = LIMIT ordered_drop 5;
+STORE ordered_lim INTO 'output' USING PigStorage(',');
+DUMP ordered_lim;
