@@ -12,3 +12,10 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
+data = LOAD 'data.tsv' USING PigStorage('\t') AS (
+            mayusc:CHARARRAY,
+            minusc:CHARARRAY,
+            map:MAP[]
+    );
+MINUS = FOREACH data GENERATE minusc,REPLACE ());
+DUMP MINUS;

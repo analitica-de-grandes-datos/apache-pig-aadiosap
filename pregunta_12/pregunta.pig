@@ -26,4 +26,14 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
-
+data = LOAD 'data.csv' USING PigStorage(',') AS (
+            id:int,
+            name:CHARARRAY,
+            mid_name:CHARARRAY,
+            date:datetime,
+            color:CHARARRAY,
+            number:int
+    );
+data_mid_name = FOREACH data GENERATE mid_name;
+data_filter = FILTER data_mid_name BY mid_name matches '^[d-k]';
+DUMP data_filter;
