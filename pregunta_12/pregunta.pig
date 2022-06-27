@@ -35,5 +35,6 @@ data = LOAD 'data.csv' USING PigStorage(',') AS (
             number:int
     );
 data_mid_name = FOREACH data GENERATE mid_name;
-data_filter = FILTER data_mid_name BY mid_name matches '^[d-k]';
+data_filter = FILTER data_mid_name BY mid_name matches '^[D-K].+';
+STORE data_filter INTO 'output' USING PigStorage(',');
 DUMP data_filter;
