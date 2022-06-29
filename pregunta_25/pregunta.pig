@@ -26,6 +26,7 @@ $ pig -x local -f pregunta.pig
             color:CHARARRAY,
             number:int
     );
-data_a_position = FOREACH data GENERATE SUBSTRING_INDEX(name,'a',1);
+data_a_position = FOREACH data GENERATE INDEXOF(name,'a',0);
+STORE data_a_position INTO 'output' USING PigStorage(',');
 DUMP data_a_position;
 
