@@ -32,5 +32,26 @@ evaluación, pig sera eejcutado ejecutado en modo local:
 $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
-*/
+*/data = LOAD 'data.csv' USING PigStorage(',') AS (
+            id:int,
+            name:CHARARRAY,
+            mid_name:CHARARRAY,
+            birth:CHARARRAY,
+            color:CHARARRAY,
+            number:int
+    );
+data = FOREACH data GENERATE ToDate(birth,'yyyy-mm-DD') as date;
+data = FOREACH data GENERATE ToString(date,'yyyy-mm-DD') as date_final,
+ToString(date,'DD') as date,
+ToString(date,'D') as number,
+LOWER(ToString(date,'EEEE')) as day_long,
+LOWER(ToString(date,'E')) as day_short;
+data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'thu','jue') AS day_short, REPLACE(day_long,'thursday','jueves') AS day_long;
+data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'sun','dom') AS day_short, REPLACE(day_long,'sunday','domingo') AS day_long;
+data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'fri','vie') AS day_short, REPLACE(day_long,'friday','viernes') AS day_long;
+data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'wed','mie') AS day_short, REPLACE(day_long,'wednesday','miercoles') AS day_long;
+data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'mon','lun') AS day_short, REPLACE(day_long,'thursday','jueves') AS day_long;
+data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'tue','mar') AS day_short, REPLACE(day_long,'tuesday','martes') AS day_long;
+STORE data INTO 'output' USING PigStorage(',');
+DUMP data;
 

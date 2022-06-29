@@ -22,5 +22,6 @@ $ pig -x local -f pregunta.pig
     );
 data_date = FOREACH data GENERATE GetYear(ToDate(date,'YYYY-MM-DD')) AS dates;
 grouped = GROUP data_date BY dates;
-wordcount = FOREACH grouped GENERATE group, COUNT(dates);
+wordcount = FOREACH grouped GENERATE group, COUNT($1);
+STORE wordcount INTO 'output' USING PigStorage(',');
 DUMP wordcount;
