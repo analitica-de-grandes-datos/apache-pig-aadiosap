@@ -32,26 +32,29 @@ evaluación, pig sera eejcutado ejecutado en modo local:
 $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
-*/data = LOAD 'data.csv' USING PigStorage(',') AS (
-            id:int,
-            name:CHARARRAY,
-            mid_name:CHARARRAY,
-            birth:CHARARRAY,
-            color:CHARARRAY,
-            number:int
+*/data = LOAD 'data.csv' USING PigStorage(',')
+    AS (
+            Id:int,
+            Name:chararray,
+            LastName:chararray,
+            Birth:chararray,
+            color:chararray,
+            value:int
     );
-data = FOREACH data GENERATE ToDate(birth,'yyyy-mm-DD') as date;
-data = FOREACH data GENERATE ToString(date,'yyyy-mm-DD') as date_final,
-ToString(date,'DD') as date,
-ToString(date,'D') as number,
-LOWER(ToString(date,'EEEE')) as day_long,
-LOWER(ToString(date,'E')) as day_short;
-data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'thu','jue') AS day_short, REPLACE(day_long,'thursday','jueves') AS day_long;
-data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'sun','dom') AS day_short, REPLACE(day_long,'sunday','domingo') AS day_long;
-data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'fri','vie') AS day_short, REPLACE(day_long,'friday','viernes') AS day_long;
-data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'wed','mie') AS day_short, REPLACE(day_long,'wednesday','miercoles') AS day_long;
-data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'mon','lun') AS day_short, REPLACE(day_long,'thursday','jueves') AS day_long;
-data = FOREACH data GENERATE date_final, date, number, REPLACE(day_short,'tue','mar') AS day_short, REPLACE(day_long,'tuesday','martes') AS day_long;
+
+read = FOREACH data GENERATE ToDate(Birth,'yyyy-MM-dd') as date;
+data = FOREACH read GENERATE ToString(date, 'yyyy-MM-dd') as completa,                              
+                              ToString(date, 'dd') as dia, 
+                              ToString(date, 'd') as ndia,
+                              LOWER(ToString(date, 'EEEE')) as day,
+                              LOWER(ToString(date, 'E')) as d;
+
+data = FOREACH data GENERATE completa, dia, ndia, REPLACE(d,'thu','jue') AS d, REPLACE(day,'thursday','jueves') AS day;
+data = FOREACH data GENERATE completa, dia, ndia, REPLACE(d,'sun','dom') AS d, REPLACE(day,'sunday','domingo') AS day;
+data = FOREACH data GENERATE completa, dia, ndia, REPLACE(d,'fri','vie') AS d, REPLACE(day,'friday','viernes') AS day;
+data = FOREACH data GENERATE completa, dia, ndia, REPLACE(d,'mon','lun') AS d, REPLACE(day,'monday','lunes') AS day;
+data = FOREACH data GENERATE completa, dia, ndia, REPLACE(d,'tue','mar') AS d, REPLACE(day,'tuesday','martes') AS day;
+data = FOREACH data GENERATE completa, dia, ndia, REPLACE(d,'wed','mie') AS d, REPLACE(day,'wednesday','miercoles') AS day;
 STORE data INTO 'output' USING PigStorage(',');
 DUMP data;
 
